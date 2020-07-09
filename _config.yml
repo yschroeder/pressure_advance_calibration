@@ -1,1 +1,6 @@
+title: Pressure Advance Calibration Pattern Generator
+description: >- # this means to ignore newlines until "baseurl:"
+  This calibration pattern generator is based in Marlin's Linear Advance Calibration.
+  It allows to calibrate the Pressure Advance feature of Klipper without wasting a lot of plastic.
+
 theme: jekyll-theme-slate
