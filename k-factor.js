@@ -937,7 +937,7 @@ function validateInput() {
   }
 }
 
-$(window).load(() => {
+$(window).on("load",() => {
   // Adapt textarea to cell size
   var TXTAREAHEIGHT = $('.txtareatd').height();
   $('.calibpat textarea').css({'height': (TXTAREAHEIGHT) + 'px'});
@@ -950,7 +950,7 @@ $(window).load(() => {
   // Get localStorage data
   var lsSettings = window.localStorage.getItem('LIN_SETTINGS');
 
-  if (lsSettings !== undefined) {
+  if (lsSettings !== null) {
     var settings = jQuery.parseJSON(lsSettings);
     if (!settings['Version'] || settings['Version'] != SETTINGS_VERSION) {
       window.localStorage.removeItem('LIN_SETTINGS');
