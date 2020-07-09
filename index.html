@@ -4,330 +4,323 @@ layout: default
 <script language="JavaScript" type="text/javascript" src="assets/js/jquery-3.5.1.min.js"></script>
 <script language="JavaScript" type="text/javascript" src="./FileSaver.min.js"></script>
 <script language="JavaScript" type="text/javascript" src="./k-factor.js"></script>
-<div class="container" role="main">
-  <div class="row">
-    <div class="calibpat" id="calibpat">
-      <h1>Pressure Advance Calibration Pattern</h1>
-      <div class="row alert alert-info custom-alert">
-        <div class="col-lg-1 col-md-2 visible-lg-block visible-md-block custom-alert-icon"> <i class="fa fa-info-circle fa-4x" aria-hidden="true"></i> </div>
-        <div class="col-lg-11 col-md-10 custom-alert-text">
-          <p><em>Caution!</em><br/>
-          K-values for Linear Advance 1.0 and 1.5 are not compatible.<br/>
-          Linear Advance 1.0 is used in Marlin 1.1.8 and earlier.<br/>
-          Linear Advance 1.5 is used in Marlin 1.1.9 and later.</p>
-        </div>
-      </div>
-      <p>Use this form to generate G-code that you can use to calibrate your Linear Advance K-factor. Default values apply to standard PLA with a 0.4mm nozzle.</p>
-      <p>Press the <code class="highlighter-rouge">Generate G-code</code> button followed by <code class="highlighter-rouge">Download as file</code> to save the result.</p>
-
-      <h2>Configuration</h2>
-
-      <div id="config-grid">
-        <h3>General</h3>
-
-        <label for="PRINTER">Printer</label>
-        <input type="text" name="PRINTER" id="PRINTER" value="printer name">
-        <div></div>
-        <div class="description">Name of the printer</div>
-
-        <label for="FILAMENT">Filament</label>
-        <input type="text" name="FILAMENT" id="FILAMENT" value="filament name">
-        <div></div>
-        <div class="description">Name of the filament (calibration value differs between materials and even colors!)</div>
-
-        <label for="FIL_DIA">Filament Diameter</label>
-        <input class="numeric" name="FIL_DIA" id="FIL_DIA" step="any" value="1.75" onblur="validateInput()">
-        <div>mm</div>
-        <div class="description">Diameter of the filament in millimeters (usually 1.75 or 2.85)</div>
-
-        <label for="NOZ_DIA">Nozzle Diameter</label>
-        <input class="numeric" name="NOZ_DIA" id="NOZ_DIA" step="any" value="0.4" onblur="validateInput()">
-        <div>mm</div>
-        <div class="description">Diameter of the nozzle in millimeters (0.4 for most printers)</div>
-
-        <label for="NOZZLE_TEMP">Nozzle Temperature</label>
-        <input class="numeric" name="NOZZLE_TEMP" id="NOZZLE_TEMP" step="any" value="205" onblur="validateInput()">
-        <div>°C</div>
-        <div class="description">Printing temperature of the filament</div>
-
-        <label for="BED_TEMP">Bed Temperature</label>
-        <input class="numeric" name="BED_TEMP" id="BED_TEMP" step="any" value="60" onblur="validateInput()">
-        <div>°C</div>
-        <div class="description">Temperature of the heated bed</div>
-
-        <label for="RETRACTION">Retraction Distance</label>
-        <input class="numeric" name="RETRACTION" id="RETRACTION" step="any" value="1" onblur="validateInput()">
-        <div>mm</div>
-        <div class="description"></div>
-
-        <label for="LAYER_HEIGHT">Layer Height</label>
-        <input class="numeric" name="LAYER_HEIGHT" id="LAYER_HEIGHT" step="0.1" value="0.2" onblur="validateInput()">
-        <div>mm</div>
-        <div class="description"></div>
-
-        <h3>Print Bed</h3>
-
-        <label for="SHAPE_BED">Bed Shape</label>
-        <select name="SHAPE_BED" id="SHAPE_BED">
-          <option value="Rect">Rectangular</option>
-          <option value="Round">Round</option>
-        </select>
-        <div></div>
-        <div class="description">Rectangular or round bed. Round beds will activate Origin Bed Center</div>
-
-        <label for="BEDSIZE_X">Bed Size X</label>
-        <input class="numeric" name="BEDSIZE_X" id="BEDSIZE_X" step="any" value="200" onblur="validateInput()">
-        <div>mm</div>
-        <div class="description" id="shape">Size in millimeters of the bed in X</div>
-
-        <label for="BEDSIZE_Y">Bed Size Y</label>
-        <input class="numeric" name="BEDSIZE_Y" id="BEDSIZE_Y" step="any" value="200" onblur="validateInput()">
-        <div>mm</div>
-        <div class="description">Size in millimeters of the bed in Y</div>
-
-        <label for="CENTER_NULL">Origin Bed Center</label>
-        <input name="CENTER_NULL" type="checkbox" id="CENTER_NULL">
-        <div></div>
-        <div class="description">Set the origin position (X0 Y0) to bed center instead of front-left corner</div>
-
-        <h3>Speed</h3>
-
-        <label for="MM_S">Use mm/s</label>
-        <input name="MM_S" type="checkbox" id="MM_S" checked="checked">
-        <div></div>
-        <div class="description">Use mm/s instead of mm/m</div>
-
-        <label for="SLOW_SPEED">Slow Printing Speed</label>
-        <input class="numeric" name="SLOW_SPEED" id="SLOW_SPEED" step="any" value="20" onblur="validateInput()">
-        <div>mm/s</div>
-        <div class="description">Slow printing speed</div>
-
-        <label for="FAST_SPEED">Fast Printing Speed</label>
-        <input class="numeric" name="FAST_SPEED" id="FAST_SPEED" step="any" value="70" onblur="validateInput()">
-        <div>mm/s</div>
-        <div class="description">Fast printing speed. This should differ noticeably from Slow Speed</div>
-
-        <label for="MOVE_SPEED">Movement Speed</label>
-        <input class="numeric" name="MOVE_SPEED" id="MOVE_SPEED" step="any" value="120" onblur="validateInput()">
-        <div>mm/s</div>
-        <div class="description">Movement speed</div>
-
-        <label for="RETRACT_SPEED">Retract Speed</label>
-        <input class="numeric" name="RETRACT_SPEED" id="RETRACT_SPEED" step="any" value="30" onblur="validateInput()">
-        <div>mm/s</div>
-        <div class="description">Retract Speed of the extruder</div>
-
-        <label for="PRINT_ACCL">Acceleration</label>
-        <input class="numeric" name="PRINT_ACCL" id="PRINT_ACCL" step="any" value="500" onblur="validateInput()">
-        <div>mm/s²</div>
-        <div class="description">Set printing acceleration</div>
-
-        <label for="X_JERK">Jerk X</label>
-        <input class="numeric" name="X_JERK" id="X_JERK" step="1" value="-1" onblur="validateInput()">
-        <div></div>
-        <div class="description">Set the Jerk for the X-axis. -1 to use firmware default</div>
-
-        <label for="Y_JERK">Jerk Y</label>
-        <input class="numeric" name="Y_JERK" id="Y_JERK" step="1" value="-1" onblur="validateInput()">
-        <div></div>
-        <div class="description">Set the Jerk for the Y-axis. -1 to use firmware default</div>
-
-        <label for="Z_JERK">Jerk Z</label>
-        <input class="numeric" name="Z_JERK" id="Z_JERK" step="1" value="-1" onblur="validateInput()">
-        <div></div>
-        <div class="description">Set the Jerk for the Z-axis. -1 to use firmware default</div>
-
-        <label for="E_JERK">Jerk E</label>
-        <input class="numeric" name="E_JERK" id="E_JERK" step="1" value="-1" onblur="validateInput()">
-        <div></div>
-        <div class="description">Set the Jerk for the Extruder. -1 to use firmware default</div>
-
-        <h3>Pattern</h3>
-
-        <label for="LIN_VERSION">Lin Advance Version</label>
-        <select name="LIN_VERSION" id="LIN_VERSION">
-          <option value="1.0">1.0</option>
-          <option value="1.5" selected="selected">1.5</option>
-        </select>
-        <div></div>
-        <div class="description">Select version 1.0 for Marlin 1.1.8 and earlier. Select 1.5 for Marlin 1.1.9 / 2.0 and up</div>
-
-        <label for="TYPE_PATTERN">Pattern Type</label>
-        <select name="TYPE_PATTERN" id="TYPE_PATTERN">
-          <option value="std">Standard</option>
-          <option value="alt">Alternate</option>
-        </select>
-        <div></div>
-        <div class="description">Select standard or alternate pattern</div>
-
-        <label for="K_START">Starting Value for K</label>
-        <input class="numeric" name="K_START" id="K_START" step="any" value="0" onblur="validateInput()">
-        <div></div>
-        <div class="description" id="start_factor">Starting value for the K-factor</div>
-
-        <label for="K_END">Ending Value for K</label>
-        <input class="numeric" name="K_END" id="K_END" step="any" value="2" onblur="validateInput()">
-        <div></div>
-        <div class="description" id="end_factor">Ending value of the K-factor</div>
-
-        <label for="K_STEP">K-factor Stepping</label>
-        <input class="numeric" name="K_STEP" id="K_STEP" step="any" value="0.2" onblur="validateInput()">
-        <div></div>
-        <div class="description" id="step_factor">Stepping of the K-factor in the test pattern. Needs to be an exact divisor of the K-factor Range (End - Start)</div>
-
-        <label for="SLOW_LENGTH">Slow Speed Length</label>
-        <input class="numeric" name="SLOW_LENGTH" id="SLOW_LENGTH" step="1" value="20" onblur="validateInput()">
-        <div>mm</div>
-        <div class="description">Length of the Slow Speed test-line</div>
-
-        <label for="FAST_LENGTH">Fast Speed Length</label>
-        <input class="numeric" name="FAST_LENGTH" id="FAST_LENGTH" step="1" value="40" onblur="validateInput()">
-        <div>mm</div>
-        <div class="description">Length of the Fast Speed test-line</div>
-
-        <label for="SPACE_LINE">Test Line Spacing</label>
-        <input class="numeric" name="SPACE_LINE" id="SPACE_LINE" step="0.1" value="5" onblur="validateInput()">
-        <div>mm</div>
-        <div class="description">Distance between the test lines. This will impact print size</div>
-
-        <label for="FRAME">Print Anchor Frame</label>
-        <input name="FRAME" type="checkbox" id="FRAME">
-        <div></div>
-        <div class="description">Adds a frame around the start and end points of the test lines. May improve adhesion</div>
-
-        <label for="DIR_PRINT">Printing Direction</label>
-        <select name="DIR_PRINT" id="DIR_PRINT" onchange="validateInput()">
-          <option value="0" selected="selected">Left to Right (0°)</option>
-          <option value="45">45°</option>
-          <option value="90">Front to Back (90°)</option>
-          <option value="135">135°</option>
-          <option value="180">Right to Left (180°)</option>
-          <option value="225">225°</option>
-          <option value="270">Back to Front (270°)</option>
-          <option value="315">315°</option>
-        </select>
-        <div></div>
-        <div class="description">Rotates the print in 45° steps</div>
-
-        <label for="LINE_NO">Line Numbering</label>
-        <input name="LINE_NO" type="checkbox" id="LINE_NO" checked="checked">
-        <div></div>
-        <div class="description">Prints the K-value besides every second test line</div>
-
-        <h3>Advanced</h3>
-
-        <label for="NOZ_LIN_R">Nozzle Line Ratio</label>
-        <input class="numeric" name="NOZ_LIN_R" id="NOZ_LIN_R" step="0.1" value="1.2" onblur="validateInput()">
-        <div></div>
-        <div class="description">Ratio between extruded line width and nozzle diameter. Should be between 1.05 and 1.2</div>
-
-        <label for="OFFSET_Z">Z-Offset</label>
-        <input class="numeric" name="OFFSET_Z" id="OFFSET_Z" step="any" value="0" onblur="validateInput()">
-        <div>mm</div>
-        <div class="description">Offset the Z-axis for manual Layer adjustment</div>
-
-        <label for="USE_BL">Use Bed Leveling</label>
-        <select name="SELECT_BED_LEVELING" id="SELECT_BED_LEVELING" onchange="validateInput()">
-          <option value="0" selected="selected">No</option>
-          <option value="G29 ; Level bed">Level bed (G29)</option>
-          <option value="M420 S1 ; Leveling ON">Leveling ON</option>
-          <option value="M420 L0 S1 ; Load UBL mesh 0">Load UBL mesh 0</option>
-          <option value="M420 L1 S1 ; Load UBL mesh 1">Load UBL mesh 1</option>
-          <option value="M420 L2 S1 ; Load UBL mesh 2">Load UBL mesh 2</option>
-          <option value="M420 L3 S1 ; Load UBL mesh 3">Load UBL mesh 3</option>
-        </select>
-        <div></div>
-        <div class="description">Level bed or load a saved mesh (i.e. for UBL) before printing. Bed leveling has to be activated in Configuration.h! Loading a mesh requires UBL to be activated!</div>
-
-        <label for="USE_FWR">Use FW Retract</label>
-        <input type="checkbox" name="USE_FWR" id="USE_FWR">
-        <div></div>
-        <div class="description">Use Firmware Retract. Needs to be activated in Marlin</div>
-
-        <label for="EXTRUSION_MULT">Extrusion Multiplier</label>
-        <input class="numeric" name="EXTRUSION_MULT" id="EXTRUSION_MULT" step="0.1" value="1.0" onblur="validateInput()">
-        <div></div>
-        <div class="description">Usually 1.0</div>
-
-        <label for="PRIME">Prime Nozzle</label>
-        <input class="numeric" name="PRIME" type="checkbox" id="PRIME" checked="checked">
-        <div></div>
-        <div class="description">Prime the nozzle before starting the test pattern</div>
-
-        <label for="PRIME_EXT">Prime Extrusion Multiplier</label>
-        <input class="numeric" name="PRIME_EXT" id="PRIME_EXT" step="0.1" value="2.5" onblur="validateInput()">
-        <div></div>
-        <div class="description">The default of 2.5 results in roughly 1mm of filament for 10mm line length</div>
-
-        <label for="PRIME_SPEED">Prime Printing Speed</label>
-        <input class="numeric" name="PRIME_SPEED" id="PRIME_SPEED" step="any" value="30" onblur="validateInput()">
-        <div>mm/s</div>
-        <div class="description">Speed of the prime move</div>
-
-        <label for="DWELL_PRIME">Dwell Time</label>
-        <input class="numeric" name="DWELL_PRIME" id="DWELL_PRIME" step="0.1" value="2" onblur="validateInput()">
-        <div>s</div>
-        <div class="description">Inserts a pause of x seconds before starting the test pattern to bleed off any residual nozzle pressure</div>
-
-        <label for="FILENAME">Filename</label>
-        <input name="FILENAME" id="FILENAME" value="filename">
-        <div>.gcode</div>
-        <div class="description">Name of the generated file</div>
-
-        <div></div>
-        <input name="button" type="button" id="button" onclick="genGcode()" value="Generate">
-        <div></div>
-        <div class="description">(Re)generate the G-code file</div>
-
-        <div></div>
-        <input name="button3" type="button" id="button3" onclick="setLocalStorage()" value="Save as default">
-        <div></div>
-        <div class="description">Saves configuration locally in your browser and restore it next time you visit this page</div>
-
-        <div></div>
-        <input name="button2" type="button" id="button2" onclick="saveTextAsFile()" value="Download">
-        <div></div>
-        <div class="description">Download G-code file to send it to the printer</div>
-      </div>
-
-      <p id="warning1" style="display: none;">warning</p>
-      <p id="warning2" style="display: none;">warning</p>
-      <p id="warning3" style="display: none;">warning</p>
-
-      <h2>G-code</h2>
-      <textarea name="textarea" id="textarea"></textarea>
-
-      <h3>Notes on the settings:</h3>
-      <ul>
-        <li><code class="highlighter-rouge">Fast Printing Speed</code> and <code class="highlighter-rouge">Slow Printing Speed</code> should be significantly different or the K-factor effect will barely be visible.</li>
-        <li><code class="highlighter-rouge">Use Bed Leveling</code> requires a probe.</li>
-        <li>For round beds the option <code class="highlighter-rouge">Origin Bed Center</code> is automatically activated.</li>
-        <li>The overall width (X-direction) of the print depends on the <code class="highlighter-rouge">Fast Speed Length</code> and <code class="highlighter-rouge">Slow Speed Length</code> settings plus 5mm for the priming line. The length (Y-direction) depends on the K-factor Settings and <code class="highlighter-rouge">Line Spacing</code>.</li>
-        <li>The script checks to make sure the print fits on the bed. Verify it using a host software like <a href="//www.pronterface.com/" target="new">Printrun</a> or <a href="//www.repetier.com/" target="new">Repetier Host</a>.</li>
-        <li><code class="highlighter-rouge">Start</code> and <code class="highlighter-rouge">End Value</code> for the K-factor determines the range that the test pattern will cover. For example a <code class="highlighter-rouge">Start Value</code> of 50 and an <code class="highlighter-rouge">End Value</code> of 150 will test a range of 100.</li>
-        <li>The <code class="highlighter-rouge">K-factor Stepping</code> determines how many test lines are printed for the above range. For example, a Stepping of 10 and a range of 100 results in 10 test lines. A stepping of 3 would not work in this example as 100 cannot be exactly divided by 3. The script will throw an error message if an exact division is not possible. In this case either the range or the stepping needs to be adjusted.</li>
-        <li>The <code class="highlighter-rouge">Alternate Pattern</code> has a second line of <code class="highlighter-rouge">Fast Printing Speed</code> to test 0 to <code class="highlighter-rouge">Fast Printing Speed</code> and back to 0 conditions. Best used with an increased <code class="highlighter-rouge">Test Line Spacing</code> and reduced K-factor range.</li>
-        <li>The proper K-factor depends on the filament, nozzle size, nozzle geometry and printing temperature. If any of these values change, the calibration might need to be repeated.</li>
-      </ul>
-      <h2>Screen-shots</h2>
-      <p>The following screen-shots show some examples of the test patterns</p>
-      <ul>
-        <li>Blue Lines are Slow Printing Speeds</li>
-        <li>Red Lines are Fast Printing Speed</li>
-        <li>Light blue lines are movements</li>
-      </ul>
-      <h3>Standard Pattern</h3>
-      <p><img src="/assets/images/features/lin_advance/std_pattern.png" alt="StandardPattern" /></p>
-      <br />
-      <h3>Alternate Pattern with increased Test Line Spacing</h3>
-      <p><img src="/assets/images/features/lin_advance/alt_pattern.png" alt="AlternatePattern" /></p>
-      <br />
-      <h3>Standard Pattern with Frame</h3>
-      <p><img src="/assets/images/features/lin_advance/frame_pattern.png" alt="FramePattern" /></p>
-      <br />
-      <h3>45° rotated Alternate Pattern</h3>
-      <p><img src="/assets/images/features/lin_advance/rot_pattern.png" alt="RotatedPattern" /></p>
-    </div>
+<h1>Pressure Advance Calibration Pattern</h1>
+<div class="row alert alert-info custom-alert">
+  <div class="col-lg-1 col-md-2 visible-lg-block visible-md-block custom-alert-icon"> <i class="fa fa-info-circle fa-4x" aria-hidden="true"></i> </div>
+  <div class="col-lg-11 col-md-10 custom-alert-text">
+    <p><em>Caution!</em><br/>
+    K-values for Linear Advance 1.0 and 1.5 are not compatible.<br/>
+    Linear Advance 1.0 is used in Marlin 1.1.8 and earlier.<br/>
+    Linear Advance 1.5 is used in Marlin 1.1.9 and later.</p>
   </div>
 </div>
-}
+<p>Use this form to generate G-code that you can use to calibrate your Linear Advance K-factor. Default values apply to standard PLA with a 0.4mm nozzle.</p>
+<p>Press the <code class="highlighter-rouge">Generate G-code</code> button followed by <code class="highlighter-rouge">Download as file</code> to save the result.</p>
+
+<h2>Configuration</h2>
+
+<div id="config-grid">
+  <h3>General</h3>
+
+  <label for="PRINTER">Printer</label>
+  <input type="text" name="PRINTER" id="PRINTER" value="printer name">
+  <div></div>
+  <div class="description">Name of the printer</div>
+
+  <label for="FILAMENT">Filament</label>
+  <input type="text" name="FILAMENT" id="FILAMENT" value="filament name">
+  <div></div>
+  <div class="description">Name of the filament (calibration value differs between materials and even colors!)</div>
+
+  <label for="FIL_DIA">Filament Diameter</label>
+  <input class="numeric" name="FIL_DIA" id="FIL_DIA" step="any" value="1.75" onblur="validateInput()">
+  <div>mm</div>
+  <div class="description">Diameter of the filament in millimeters (usually 1.75 or 2.85)</div>
+
+  <label for="NOZ_DIA">Nozzle Diameter</label>
+  <input class="numeric" name="NOZ_DIA" id="NOZ_DIA" step="any" value="0.4" onblur="validateInput()">
+  <div>mm</div>
+  <div class="description">Diameter of the nozzle in millimeters (0.4 for most printers)</div>
+
+  <label for="NOZZLE_TEMP">Nozzle Temperature</label>
+  <input class="numeric" name="NOZZLE_TEMP" id="NOZZLE_TEMP" step="any" value="205" onblur="validateInput()">
+  <div>°C</div>
+  <div class="description">Printing temperature of the filament</div>
+
+  <label for="BED_TEMP">Bed Temperature</label>
+  <input class="numeric" name="BED_TEMP" id="BED_TEMP" step="any" value="60" onblur="validateInput()">
+  <div>°C</div>
+  <div class="description">Temperature of the heated bed</div>
+
+  <label for="RETRACTION">Retraction Distance</label>
+  <input class="numeric" name="RETRACTION" id="RETRACTION" step="any" value="1" onblur="validateInput()">
+  <div>mm</div>
+  <div class="description"></div>
+
+  <label for="LAYER_HEIGHT">Layer Height</label>
+  <input class="numeric" name="LAYER_HEIGHT" id="LAYER_HEIGHT" step="0.1" value="0.2" onblur="validateInput()">
+  <div>mm</div>
+  <div class="description"></div>
+
+  <h3>Print Bed</h3>
+
+  <label for="SHAPE_BED">Bed Shape</label>
+  <select name="SHAPE_BED" id="SHAPE_BED">
+    <option value="Rect">Rectangular</option>
+    <option value="Round">Round</option>
+  </select>
+  <div></div>
+  <div class="description">Rectangular or round bed. Round beds will activate Origin Bed Center</div>
+
+  <label for="BEDSIZE_X">Bed Size X</label>
+  <input class="numeric" name="BEDSIZE_X" id="BEDSIZE_X" step="any" value="200" onblur="validateInput()">
+  <div>mm</div>
+  <div class="description" id="shape">Size in millimeters of the bed in X</div>
+
+  <label for="BEDSIZE_Y">Bed Size Y</label>
+  <input class="numeric" name="BEDSIZE_Y" id="BEDSIZE_Y" step="any" value="200" onblur="validateInput()">
+  <div>mm</div>
+  <div class="description">Size in millimeters of the bed in Y</div>
+
+  <label for="CENTER_NULL">Origin Bed Center</label>
+  <input name="CENTER_NULL" type="checkbox" id="CENTER_NULL">
+  <div></div>
+  <div class="description">Set the origin position (X0 Y0) to bed center instead of front-left corner</div>
+
+  <h3>Speed</h3>
+
+  <label for="MM_S">Use mm/s</label>
+  <input name="MM_S" type="checkbox" id="MM_S" checked="checked">
+  <div></div>
+  <div class="description">Use mm/s instead of mm/m</div>
+
+  <label for="SLOW_SPEED">Slow Printing Speed</label>
+  <input class="numeric" name="SLOW_SPEED" id="SLOW_SPEED" step="any" value="20" onblur="validateInput()">
+  <div>mm/s</div>
+  <div class="description">Slow printing speed</div>
+
+  <label for="FAST_SPEED">Fast Printing Speed</label>
+  <input class="numeric" name="FAST_SPEED" id="FAST_SPEED" step="any" value="70" onblur="validateInput()">
+  <div>mm/s</div>
+  <div class="description">Fast printing speed. This should differ noticeably from Slow Speed</div>
+
+  <label for="MOVE_SPEED">Movement Speed</label>
+  <input class="numeric" name="MOVE_SPEED" id="MOVE_SPEED" step="any" value="120" onblur="validateInput()">
+  <div>mm/s</div>
+  <div class="description">Movement speed</div>
+
+  <label for="RETRACT_SPEED">Retract Speed</label>
+  <input class="numeric" name="RETRACT_SPEED" id="RETRACT_SPEED" step="any" value="30" onblur="validateInput()">
+  <div>mm/s</div>
+  <div class="description">Retract Speed of the extruder</div>
+
+  <label for="PRINT_ACCL">Acceleration</label>
+  <input class="numeric" name="PRINT_ACCL" id="PRINT_ACCL" step="any" value="500" onblur="validateInput()">
+  <div>mm/s²</div>
+  <div class="description">Set printing acceleration</div>
+
+  <label for="X_JERK">Jerk X</label>
+  <input class="numeric" name="X_JERK" id="X_JERK" step="1" value="-1" onblur="validateInput()">
+  <div></div>
+  <div class="description">Set the Jerk for the X-axis. -1 to use firmware default</div>
+
+  <label for="Y_JERK">Jerk Y</label>
+  <input class="numeric" name="Y_JERK" id="Y_JERK" step="1" value="-1" onblur="validateInput()">
+  <div></div>
+  <div class="description">Set the Jerk for the Y-axis. -1 to use firmware default</div>
+
+  <label for="Z_JERK">Jerk Z</label>
+  <input class="numeric" name="Z_JERK" id="Z_JERK" step="1" value="-1" onblur="validateInput()">
+  <div></div>
+  <div class="description">Set the Jerk for the Z-axis. -1 to use firmware default</div>
+
+  <label for="E_JERK">Jerk E</label>
+  <input class="numeric" name="E_JERK" id="E_JERK" step="1" value="-1" onblur="validateInput()">
+  <div></div>
+  <div class="description">Set the Jerk for the Extruder. -1 to use firmware default</div>
+
+  <h3>Pattern</h3>
+
+  <label for="LIN_VERSION">Lin Advance Version</label>
+  <select name="LIN_VERSION" id="LIN_VERSION">
+    <option value="1.0">1.0</option>
+    <option value="1.5" selected="selected">1.5</option>
+  </select>
+  <div></div>
+  <div class="description">Select version 1.0 for Marlin 1.1.8 and earlier. Select 1.5 for Marlin 1.1.9 / 2.0 and up</div>
+
+  <label for="TYPE_PATTERN">Pattern Type</label>
+  <select name="TYPE_PATTERN" id="TYPE_PATTERN">
+    <option value="std">Standard</option>
+    <option value="alt">Alternate</option>
+  </select>
+  <div></div>
+  <div class="description">Select standard or alternate pattern</div>
+
+  <label for="K_START">Starting Value for K</label>
+  <input class="numeric" name="K_START" id="K_START" step="any" value="0" onblur="validateInput()">
+  <div></div>
+  <div class="description" id="start_factor">Starting value for the K-factor</div>
+
+  <label for="K_END">Ending Value for K</label>
+  <input class="numeric" name="K_END" id="K_END" step="any" value="2" onblur="validateInput()">
+  <div></div>
+  <div class="description" id="end_factor">Ending value of the K-factor</div>
+
+  <label for="K_STEP">K-factor Stepping</label>
+  <input class="numeric" name="K_STEP" id="K_STEP" step="any" value="0.2" onblur="validateInput()">
+  <div></div>
+  <div class="description" id="step_factor">Stepping of the K-factor in the test pattern. Needs to be an exact divisor of the K-factor Range (End - Start)</div>
+
+  <label for="SLOW_LENGTH">Slow Speed Length</label>
+  <input class="numeric" name="SLOW_LENGTH" id="SLOW_LENGTH" step="1" value="20" onblur="validateInput()">
+  <div>mm</div>
+  <div class="description">Length of the Slow Speed test-line</div>
+
+  <label for="FAST_LENGTH">Fast Speed Length</label>
+  <input class="numeric" name="FAST_LENGTH" id="FAST_LENGTH" step="1" value="40" onblur="validateInput()">
+  <div>mm</div>
+  <div class="description">Length of the Fast Speed test-line</div>
+
+  <label for="SPACE_LINE">Test Line Spacing</label>
+  <input class="numeric" name="SPACE_LINE" id="SPACE_LINE" step="0.1" value="5" onblur="validateInput()">
+  <div>mm</div>
+  <div class="description">Distance between the test lines. This will impact print size</div>
+
+  <label for="FRAME">Print Anchor Frame</label>
+  <input name="FRAME" type="checkbox" id="FRAME">
+  <div></div>
+  <div class="description">Adds a frame around the start and end points of the test lines. May improve adhesion</div>
+
+  <label for="DIR_PRINT">Printing Direction</label>
+  <select name="DIR_PRINT" id="DIR_PRINT" onchange="validateInput()">
+    <option value="0" selected="selected">Left to Right (0°)</option>
+    <option value="45">45°</option>
+    <option value="90">Front to Back (90°)</option>
+    <option value="135">135°</option>
+    <option value="180">Right to Left (180°)</option>
+    <option value="225">225°</option>
+    <option value="270">Back to Front (270°)</option>
+    <option value="315">315°</option>
+  </select>
+  <div></div>
+  <div class="description">Rotates the print in 45° steps</div>
+
+  <label for="LINE_NO">Line Numbering</label>
+  <input name="LINE_NO" type="checkbox" id="LINE_NO" checked="checked">
+  <div></div>
+  <div class="description">Prints the K-value besides every second test line</div>
+
+  <h3>Advanced</h3>
+
+  <label for="NOZ_LIN_R">Nozzle Line Ratio</label>
+  <input class="numeric" name="NOZ_LIN_R" id="NOZ_LIN_R" step="0.1" value="1.2" onblur="validateInput()">
+  <div></div>
+  <div class="description">Ratio between extruded line width and nozzle diameter. Should be between 1.05 and 1.2</div>
+
+  <label for="OFFSET_Z">Z-Offset</label>
+  <input class="numeric" name="OFFSET_Z" id="OFFSET_Z" step="any" value="0" onblur="validateInput()">
+  <div>mm</div>
+  <div class="description">Offset the Z-axis for manual Layer adjustment</div>
+
+  <label for="USE_BL">Use Bed Leveling</label>
+  <select name="SELECT_BED_LEVELING" id="SELECT_BED_LEVELING" onchange="validateInput()">
+    <option value="0" selected="selected">No</option>
+    <option value="G29 ; Level bed">Level bed (G29)</option>
+    <option value="M420 S1 ; Leveling ON">Leveling ON</option>
+    <option value="M420 L0 S1 ; Load UBL mesh 0">Load UBL mesh 0</option>
+    <option value="M420 L1 S1 ; Load UBL mesh 1">Load UBL mesh 1</option>
+    <option value="M420 L2 S1 ; Load UBL mesh 2">Load UBL mesh 2</option>
+    <option value="M420 L3 S1 ; Load UBL mesh 3">Load UBL mesh 3</option>
+  </select>
+  <div></div>
+  <div class="description">Level bed or load a saved mesh (i.e. for UBL) before printing. Bed leveling has to be activated in Configuration.h! Loading a mesh requires UBL to be activated!</div>
+
+  <label for="USE_FWR">Use FW Retract</label>
+  <input type="checkbox" name="USE_FWR" id="USE_FWR">
+  <div></div>
+  <div class="description">Use Firmware Retract. Needs to be activated in Marlin</div>
+
+  <label for="EXTRUSION_MULT">Extrusion Multiplier</label>
+  <input class="numeric" name="EXTRUSION_MULT" id="EXTRUSION_MULT" step="0.1" value="1.0" onblur="validateInput()">
+  <div></div>
+  <div class="description">Usually 1.0</div>
+
+  <label for="PRIME">Prime Nozzle</label>
+  <input class="numeric" name="PRIME" type="checkbox" id="PRIME" checked="checked">
+  <div></div>
+  <div class="description">Prime the nozzle before starting the test pattern</div>
+
+  <label for="PRIME_EXT">Prime Extrusion Multiplier</label>
+  <input class="numeric" name="PRIME_EXT" id="PRIME_EXT" step="0.1" value="2.5" onblur="validateInput()">
+  <div></div>
+  <div class="description">The default of 2.5 results in roughly 1mm of filament for 10mm line length</div>
+
+  <label for="PRIME_SPEED">Prime Printing Speed</label>
+  <input class="numeric" name="PRIME_SPEED" id="PRIME_SPEED" step="any" value="30" onblur="validateInput()">
+  <div>mm/s</div>
+  <div class="description">Speed of the prime move</div>
+
+  <label for="DWELL_PRIME">Dwell Time</label>
+  <input class="numeric" name="DWELL_PRIME" id="DWELL_PRIME" step="0.1" value="2" onblur="validateInput()">
+  <div>s</div>
+  <div class="description">Inserts a pause of x seconds before starting the test pattern to bleed off any residual nozzle pressure</div>
+
+  <label for="FILENAME">Filename</label>
+  <input name="FILENAME" id="FILENAME" value="filename">
+  <div>.gcode</div>
+  <div class="description">Name of the generated file</div>
+
+  <div></div>
+  <input name="button" type="button" id="button" onclick="genGcode()" value="Generate">
+  <div></div>
+  <div class="description">(Re)generate the G-code file</div>
+
+  <div></div>
+  <input name="button3" type="button" id="button3" onclick="setLocalStorage()" value="Save as default">
+  <div></div>
+  <div class="description">Saves configuration locally in your browser and restore it next time you visit this page</div>
+
+  <div></div>
+  <input name="button2" type="button" id="button2" onclick="saveTextAsFile()" value="Download">
+  <div></div>
+  <div class="description">Download G-code file to send it to the printer</div>
+</div>
+
+<p id="warning1" style="display: none;">warning</p>
+<p id="warning2" style="display: none;">warning</p>
+<p id="warning3" style="display: none;">warning</p>
+
+<h2>G-code</h2>
+<textarea name="textarea" id="textarea"></textarea>
+
+<h3>Notes on the settings:</h3>
+<ul>
+  <li><code class="highlighter-rouge">Fast Printing Speed</code> and <code class="highlighter-rouge">Slow Printing Speed</code> should be significantly different or the K-factor effect will barely be visible.</li>
+  <li><code class="highlighter-rouge">Use Bed Leveling</code> requires a probe.</li>
+  <li>For round beds the option <code class="highlighter-rouge">Origin Bed Center</code> is automatically activated.</li>
+  <li>The overall width (X-direction) of the print depends on the <code class="highlighter-rouge">Fast Speed Length</code> and <code class="highlighter-rouge">Slow Speed Length</code> settings plus 5mm for the priming line. The length (Y-direction) depends on the K-factor Settings and <code class="highlighter-rouge">Line Spacing</code>.</li>
+  <li>The script checks to make sure the print fits on the bed. Verify it using a host software like <a href="//www.pronterface.com/" target="new">Printrun</a> or <a href="//www.repetier.com/" target="new">Repetier Host</a>.</li>
+  <li><code class="highlighter-rouge">Start</code> and <code class="highlighter-rouge">End Value</code> for the K-factor determines the range that the test pattern will cover. For example a <code class="highlighter-rouge">Start Value</code> of 50 and an <code class="highlighter-rouge">End Value</code> of 150 will test a range of 100.</li>
+  <li>The <code class="highlighter-rouge">K-factor Stepping</code> determines how many test lines are printed for the above range. For example, a Stepping of 10 and a range of 100 results in 10 test lines. A stepping of 3 would not work in this example as 100 cannot be exactly divided by 3. The script will throw an error message if an exact division is not possible. In this case either the range or the stepping needs to be adjusted.</li>
+  <li>The <code class="highlighter-rouge">Alternate Pattern</code> has a second line of <code class="highlighter-rouge">Fast Printing Speed</code> to test 0 to <code class="highlighter-rouge">Fast Printing Speed</code> and back to 0 conditions. Best used with an increased <code class="highlighter-rouge">Test Line Spacing</code> and reduced K-factor range.</li>
+  <li>The proper K-factor depends on the filament, nozzle size, nozzle geometry and printing temperature. If any of these values change, the calibration might need to be repeated.</li>
+</ul>
+<h2>Screen-shots</h2>
+<p>The following screen-shots show some examples of the test patterns</p>
+<ul>
+  <li>Blue Lines are Slow Printing Speeds</li>
+  <li>Red Lines are Fast Printing Speed</li>
+  <li>Light blue lines are movements</li>
+</ul>
+<h3>Standard Pattern</h3>
+<p><img src="/assets/images/features/lin_advance/std_pattern.png" alt="StandardPattern" /></p>
+<br />
+<h3>Alternate Pattern with increased Test Line Spacing</h3>
+<p><img src="/assets/images/features/lin_advance/alt_pattern.png" alt="AlternatePattern" /></p>
+<br />
+<h3>Standard Pattern with Frame</h3>
+<p><img src="/assets/images/features/lin_advance/frame_pattern.png" alt="FramePattern" /></p>
+<br />
+<h3>45° rotated Alternate Pattern</h3>
+<p><img src="/assets/images/features/lin_advance/rot_pattern.png" alt="RotatedPattern" /></p>
