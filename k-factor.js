@@ -19,7 +19,7 @@
 
 // Settings version of localStorage
 // Increase if default settings are changed / amended
-const SETTINGS_VERSION = '1.1';
+const SETTINGS_VERSION = '1.0';
 
 function genGcode() {
 
@@ -687,7 +687,7 @@ function setLocalStorage() {
   };
 
   const lsSettings = JSON.stringify(settings);
-  window.localStorage.setItem('LIN_SETTINGS', lsSettings);
+  window.localStorage.setItem('PA_SETTINGS', lsSettings);
 }
 
 // toggle between mm/s and mm/m speed settings
@@ -948,12 +948,12 @@ $(window).on("load",() => {
   });
 
   // Get localStorage data
-  var lsSettings = window.localStorage.getItem('LIN_SETTINGS');
+  var lsSettings = window.localStorage.getItem('PA_SETTINGS');
 
   if (lsSettings !== null) {
     var settings = jQuery.parseJSON(lsSettings);
     if (!settings['Version'] || settings['Version'] != SETTINGS_VERSION) {
-      window.localStorage.removeItem('LIN_SETTINGS');
+      window.localStorage.removeItem('PA_SETTINGS');
       alert('Script settings have been updated. Saved settings are reset to default values');
     } else {
       $('#FIL_DIA').val(settings['FILAMENT_DIAMETER']);
