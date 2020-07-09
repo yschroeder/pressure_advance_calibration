@@ -6,3 +6,35 @@
 .inner {
   max-width: 1000px;
 }
+
+#config-grid {
+  display: grid;
+  grid-template-columns: max-content 120px max-content auto;
+  align-items: center;
+  row-gap: 25px;
+  column-gap: 15px;
+}
+
+label {
+  font-weight: bold;
+  justify-self: end;
+}
+
+.description {
+  color: gray;
+}
+
+#textarea {
+  width: 100%;
+  height: 300px;
+  resize: vertical;
+}
+
+.numeric {
+    text-align: right;
+}
+
+#config-grid > h3 {
+  grid-column-start: 1;
+  grid-column-end: 5;
+}
