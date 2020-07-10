@@ -667,6 +667,7 @@ function setLocalStorage() {
     'BED_SHAPE': BED_SHAPE,
     'BED_X': BED_X,
     'BED_Y': BED_Y,
+    'BED_DIA': BED_DIA,
     'NULL_CENTER': NULL_CENTER,
     'HEIGHT_LAYER': HEIGHT_LAYER,
     'EXT_MULT': EXT_MULT,
@@ -812,6 +813,7 @@ function validateInput() {
         // false numeric validation
         BEDSIZE_X: $('#BEDSIZE_X').val(),
         BEDSIZE_Y: $('#BEDSIZE_Y').val(),
+        BEDSIZE_DIA: $('#BEDSIZE_DIA').val(),
         K_START: $('#K_START').val(),
         K_END: $('#K_END').val(),
         K_STEP: $('#K_STEP').val(),
