@@ -857,12 +857,13 @@ function validateInput() {
       invalidDiv = 0;
 
   // Start clean
-  $('#K_START,#K_END,#K_STEP,#SPACE_LINE,#SLOW_LENGTH,#FAST_LENGTH,#FIL_DIA,#NOZ_DIA,#LAYER_HEIGHT,#EXTRUSION_MULT,#PRIME_EXT,#OFFSET_Z,#NOZ_LIN_R,'
+  $('#K_START,#K_END,#K_STEP,#SPACE_LINE,#SLOW_LENGTH,#FAST_LENGTH,#FIL_DIA,#NOZ_DIA,#LAYER_HEIGHT,#BEDSIZE_X,#BEDSIZE_Y,#BEDSIZE_DIA,#EXTRUSION_MULT,#PRIME_EXT,#OFFSET_Z,#NOZ_LIN_R,'
      + '#NOZZLE_TEMP,#BED_TEMP,#MOVE_SPEED,#RETRACT_SPEED,#PRINT_ACCL,#RETRACTION,#PRIME_SPEED,#DWELL_PRIME,#FAST_SPEED,#SLOW_SPEED,#X_JERK,#Y_JERK,#Z_JERK,#E_JERK').each((i,t) => {
     t.setCustomValidity('');
     const tid = $(t).attr('id');
     $(`label[for=${tid}]`).removeClass();
   });
+  $(`label[for=BEDSIZE]`).removeClass();
   $('#warning1').hide();
   $('#warning2').hide();
   $('#warning3').hide();
@@ -871,7 +872,13 @@ function validateInput() {
   // Check for proper numerical values
   Object.keys(testNaN).forEach((k) => {
     if ((isNaN(testNaN[k]) && !isFinite(testNaN[k])) || testNaN[k].trim().length === 0) {
-      $('label[for=' + k + ']').addClass('invalidNumber');
+      if (k === "BEDSIZE_X") {
+        $('label[for=BEDSIZE]').addClass('invalidNumber');
+      } else if (k === "BEDSIZE_Y") {
+        $('label[for=BEDSIZE]').addClass('invalidNumber');
+      } else {
+        $('label[for=' + k + ']').addClass('invalidNumber');
+      }
       $('#' + k)[0].setCustomValidity('The value is not a proper number.');
       $('#warning3').text('Some values are not proper numbers. Check highlighted Settings.');
       $('#warning3').addClass('invalidNumber');
@@ -946,10 +953,6 @@ function validateInput() {
 }
 
 $(window).on("load",() => {
-  // Adapt textarea to cell size
-  var TXTAREAHEIGHT = $('.txtareatd').height();
-  $('.calibpat textarea').css({'height': (TXTAREAHEIGHT) + 'px'});
-
   // create tab index dynamically
   $(':input:not(:hidden)').each(function(i) {
     $(this).attr('tabindex', i + 1);

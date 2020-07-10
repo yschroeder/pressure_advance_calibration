@@ -50,3 +50,17 @@ label {
 #rect_bed > input {
   width: 42px;
 }
+
+.invalidNumber {
+  color: red;
+}
+
+input {
+  padding: 5px;
+}
+
+input:invalid {
+  border-color: red;
+  border-style: solid;
+  box-shadow: 0px 0px 10px 1px red;
+}
