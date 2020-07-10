@@ -42,6 +42,7 @@ function genGcode() {
       BED_SHAPE = $('#SHAPE_BED').val(),
       BED_X = parseInt($('#BEDSIZE_X').val()),
       BED_Y = parseInt($('#BEDSIZE_Y').val()),
+      BED_DIA = parseInt($('#BEDSIZE_DIA').val()),
       NULL_CENTER = $('#CENTER_NULL').prop('checked'),
       HEIGHT_LAYER = parseFloat($('#LAYER_HEIGHT').val()),
       EXT_MULT = parseFloat($('#EXTRUSION_MULT').val()),
@@ -70,7 +71,8 @@ function genGcode() {
       USE_LINENO = $('#LINE_NO').prop('checked');
 
   if (BED_SHAPE === 'Round') {
-    BED_Y = BED_X;
+    BED_X = BED_DIA;
+    BED_Y = BED_DIA;
   }
 
   if (USE_MMS) {
@@ -143,7 +145,7 @@ function genGcode() {
                   ';\n' +
                   '; Settings Print Bed:\n' +
                   '; Bed Shape = ' + BED_SHAPE + '\n' +
-                  (BED_SHAPE === 'Round' ? '; Bed Diameter = ' + BED_X + ' mm\n' : '; Bed Size X = ' + BED_X + ' mm\n') +
+                  (BED_SHAPE === 'Round' ? '; Bed Diameter = ' + BED_DIA + ' mm\n' : '; Bed Size X = ' + BED_X + ' mm\n') +
                   (BED_SHAPE === 'Round' ? '' : '; Bed Size Y = ' + BED_Y + ' mm\n') +
                   '; Origin Bed Center = ' + (NULL_CENTER ? 'true' : 'false') + '\n' +
                   ';\n' +
@@ -622,6 +624,7 @@ function setLocalStorage() {
       BED_SHAPE = $('#SHAPE_BED').val(),
       BED_X = parseInt($('#BEDSIZE_X').val()),
       BED_Y = parseInt($('#BEDSIZE_Y').val()),
+      BED_DIA = parseInt($('#BEDSIZE_DIA').val()),
       NULL_CENTER = $('#CENTER_NULL').prop('checked'),
       HEIGHT_LAYER = parseFloat($('#LAYER_HEIGHT').val()),
       EXT_MULT = parseFloat($('#EXTRUSION_MULT').val()),
@@ -730,18 +733,16 @@ function speedToggle() {
 // toggle between round and rectangular bed shape
 function toggleBedShape() {
   if ($('#SHAPE_BED').val() === 'Round') {
-    $('label[for=\'BEDSIZE_X\']').text('Bed Diameter:');
-    $('#shape').text('Diameter (mm) of the bed');
+    $('#BEDSIZE_X').prop('disabled', true);
     $('#BEDSIZE_Y').prop('disabled', true);
-    $('label[for=BEDSIZE_Y]').css({opacity: 0.5});
+    $('#BEDSIZE_DIA').prop('disabled', false);
     if (!$('#CENTER_NULL').is(':checked')) {
       $('#CENTER_NULL').prop('checked', !$('#CENTER_NULL').prop('checked'));
     }
   } else {
-    $('label[for=\'BEDSIZE_X\']').text('Bed Size X:');
-    $('#shape').text('Size (mm) of the bed in X');
+    $('#BEDSIZE_X').prop('disabled', false);
     $('#BEDSIZE_Y').prop('disabled', false);
-    $('label[for=BEDSIZE_Y]').css({opacity: 1});
+    $('#BEDSIZE_DIA').prop('disabled', true);
   }
 }
 
@@ -893,7 +894,7 @@ function validateInput() {
   }
 
   // Check if pattern settings exceed bed size
-  if (bedShape === 'Round' && (Math.sqrt(Math.pow(fitWidth, 2) + Math.pow(fitHeight, 2)) > (parseInt(testNaN['BEDSIZE_X']) - 5)) && fitHeight > fitWidth) {
+  if (bedShape === 'Round' && (Math.sqrt(Math.pow(fitWidth, 2) + Math.pow(fitHeight, 2)) > (parseInt(testNaN['BEDSIZE_DIA']) - 5)) && fitHeight > fitWidth) {
     $('label[for=K_START]').addClass('invalidSize');
     $('#K_START')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your bed\'s diameter.');
     $('label[for=K_END]').addClass('invalidSize');
@@ -907,7 +908,7 @@ function validateInput() {
     $((invalidDiv ? '#warning2' : '#warning1')).show();
   }
 
-  if (bedShape === 'Round' && (Math.sqrt(Math.pow(fitWidth, 2) + Math.pow(fitHeight, 2)) > (parseInt(testNaN['BEDSIZE_X']) - 5)) && fitWidth > fitHeight) {
+  if (bedShape === 'Round' && (Math.sqrt(Math.pow(fitWidth, 2) + Math.pow(fitHeight, 2)) > (parseInt(testNaN['BEDSIZE_DIA']) - 5)) && fitWidth > fitHeight) {
     $('label[for=SLOW_LENGTH]').addClass('invalidSize');
     $('#SLOW_LENGTH')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your bed\'s diameter.');
     $('label[for=FAST_LENGTH]').addClass('invalidSize');
@@ -975,6 +976,7 @@ $(window).on("load",() => {
       $('#SHAPE_BED').val(settings['BED_SHAPE']);
       $('#BEDSIZE_X').val(settings['BED_X']);
       $('#BEDSIZE_Y').val(settings['BED_Y']);
+      $('#BEDSIZE_DIA').val(settings['BED_DIA']);
       $('#CENTER_NULL').prop('checked', settings['NULL_CENTER']);
       $('#LAYER_HEIGHT').val(settings['HEIGHT_LAYER']);
       $('#EXTRUSION_MULT').val(settings['EXT_MULT']);
