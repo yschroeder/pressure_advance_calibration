@@ -9,7 +9,7 @@
 
 #config-grid {
   display: grid;
-  grid-template-columns: max-content 120px max-content auto;
+  grid-template-columns: max-content 120px min-content auto;
   align-items: center;
   row-gap: 25px;
   column-gap: 15px;
@@ -36,6 +36,11 @@ label {
 
 #config-grid > h3 {
   grid-column-start: 1;
+  grid-column-end: 5;
+}
+
+#tested_values {
+  grid-column-start: 2;
   grid-column-end: 5;
 }
 

@@ -907,6 +907,13 @@ function validateInput() {
     $((invalidDiv ? '#warning2' : '#warning1')).addClass('invalidSize');
     $((invalidDiv ? '#warning2' : '#warning1')).show();
   }
+
+  // displayed tested PA values
+  var pa_values = '';
+  for (var i = parseFloat(testNaN['PA_START']); i <= parseFloat(testNaN['PA_END']); i += parseFloat(testNaN['PA_STEP'])) {
+    pa_values += Math.round10(i, -3) + ' ';
+  }
+  $('#tested_values').html(pa_values);
 }
 
 $(window).on("load",() => {
