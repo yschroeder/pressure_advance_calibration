@@ -25,9 +25,7 @@ const SETTINGS_VERSION = '1.0';
 function genGcode() {
 
   // get the values from the HTML elements
-  var PRINTER = $('#PRINTER').val(),
-      FILAMENT = $('#FILAMENT').val(),
-      FILENAME = $('#FILENAME').val(),
+  var FILENAME = $('#FILENAME').val(),
       FILAMENT_DIAMETER = parseFloat($('#FIL_DIA').val()),
       NOZZLE_DIAMETER = parseFloat($('#NOZ_DIA').val()),
       NOZZLE_TEMP = parseInt($('#NOZZLE_TEMP').val()),
@@ -130,8 +128,6 @@ function genGcode() {
                   '; https://marlinfw.org/tools/lin_advance/k-factor.html\n' +
                   '; -------------------------------------------\n' +
                   ';\n' +
-                  '; Printer: ' + PRINTER + '\n' +
-                  '; Filament: ' + FILAMENT + '\n' +
                   '; Created: ' + new Date() + '\n' +
                   ';\n' +
                   '; Settings Printer:\n' +
