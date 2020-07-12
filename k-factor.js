@@ -44,7 +44,6 @@ function genGcode() {
       NULL_CENTER = $('#CENTER_NULL').prop('checked'),
       HEIGHT_LAYER = parseFloat($('#LAYER_HEIGHT').val()),
       EXT_MULT = parseFloat($('#EXTRUSION_MULT').val()),
-      VERSION_LIN = $('#LIN_VERSION').val(),
       PATTERN_TYPE = $('#TYPE_PATTERN').val(),
       K_START = parseFloat($('#K_START').val()),
       K_END = parseFloat($('#K_END').val()),
@@ -151,7 +150,6 @@ function genGcode() {
                   '; Square Corner Velocity = ' + (SQUARE_CORNER_VELOCITY !== -1 ? SQUARE_CORNER_VELOCITY + '\n': ' configuration default\n') +
                   ';\n' +
                   '; Settings Pattern:\n' +
-                  '; Linear Advance Version = ' + VERSION_LIN + '\n' +
                   '; Starting Value Factor = ' + K_START + '\n' +
                   '; Ending Value Factor = ' + K_END + '\n' +
                   '; Factor Stepping = ' + K_STEP + '\n' +
@@ -615,7 +613,6 @@ function setLocalStorage() {
       NULL_CENTER = $('#CENTER_NULL').prop('checked'),
       HEIGHT_LAYER = parseFloat($('#LAYER_HEIGHT').val()),
       EXT_MULT = parseFloat($('#EXTRUSION_MULT').val()),
-      VERSION_LIN = $('#LIN_VERSION').val(),
       PATTERN_TYPE = $('#TYPE_PATTERN').val(),
       K_START = parseFloat($('#K_START').val()),
       K_END = parseFloat($('#K_END').val()),
@@ -655,7 +652,6 @@ function setLocalStorage() {
     'NULL_CENTER': NULL_CENTER,
     'HEIGHT_LAYER': HEIGHT_LAYER,
     'EXT_MULT': EXT_MULT,
-    'VERSION_LIN': VERSION_LIN,
     'PATTERN_TYPE': PATTERN_TYPE,
     'K_START': K_START,
     'K_END': K_END,
@@ -755,25 +751,6 @@ function togglePrime() {
   } else {
     $('#PRIME_EXT').prop('disabled', true);
     $('label[for=PRIME_EXT]').css({opacity: 0.5});
-  }
-}
-
-// toggle options for LIN_ADVANCE v1.0 and v1.5
-function toggleVersion() {
-  if ($('#LIN_VERSION').val() === '1.5') {
-    $('#K_START').attr('step', 'any').val('0');
-    $('#K_END').attr('step', 'any').val('2');
-    $('#K_STEP').attr('step', 'any').val('0.2');
-    $('#start_factor').text('Starting value for the Pressure Advance');
-    $('#end_factor').text('Ending value of the Pressure Advance');
-    $('#step_factor').text('Stepping of the Pressure Advance in the test pattern. Needs to be an exact divisor of the Pressure Advance Range (End - Start)');
-  } else {
-    $('#K_START').attr('step', '1').val('0');
-    $('#K_END').attr('step', '1').val('100');
-    $('#K_STEP').attr({ step: '1', value: '5' }).val('5');
-    $('#start_factor').text('Starting value for the Pressure Advance. Usually 0 but for bowden setups you might want to start higher, e.g. 30');
-    $('#end_factor').text('Ending value of the Pressure Advance. Bowden setups may be higher than 100');
-    $('#step_factor').text('Stepping of the Pressure Advance in the test pattern. Needs to be an exact divisor of the Pressure Advance Range (End - Start)');
   }
 }
 
@@ -965,7 +942,6 @@ $(window).on("load",() => {
       $('#CENTER_NULL').prop('checked', settings['NULL_CENTER']);
       $('#LAYER_HEIGHT').val(settings['HEIGHT_LAYER']);
       $('#EXTRUSION_MULT').val(settings['EXT_MULT']);
-      $('#LIN_VERSION').val(settings['VERSION_LIN']);
       $('#TYPE_PATTERN').val(settings['PATTERN_TYPE']);
       $('#K_START').val(settings['K_START']);
       $('#K_END').val(settings['K_END']);
@@ -1007,12 +983,6 @@ $(window).on("load",() => {
 
   // frame and alternate pattern are mutually exclusive
   $('#TYPE_PATTERN').change(patternType);
-
-  // Change factor type
-  $('#LIN_VERSION').change(() => {
-    toggleVersion();
-    validateInput();
-  });
 
   // Change retract type
   $('#USE_FWR').change(toggleRetract);
