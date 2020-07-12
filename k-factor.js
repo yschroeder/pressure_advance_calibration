@@ -49,10 +49,7 @@ function genGcode() {
       K_START = parseFloat($('#K_START').val()),
       K_END = parseFloat($('#K_END').val()),
       K_STEP = parseFloat($('#K_STEP').val()),
-      X_JERK = parseFloat($('#X_JERK').val()),
-      Y_JERK = parseFloat($('#Y_JERK').val()),
-      Z_JERK = parseFloat($('#Z_JERK').val()),
-      E_JERK = parseFloat($('#E_JERK').val()),
+      SQUARE_CORNER_VELOCITY = parseFloat($('#SQUARE_CORNER_VELOCITY').val()),
       PRINT_DIR = $('#DIR_PRINT').val(),
       LINE_SPACING = parseFloat($('#SPACE_LINE').val()),
       USE_FRAME = $('#FRAME').prop('checked'),
@@ -151,10 +148,7 @@ function genGcode() {
                   '; Movement Speed = ' + SPEED_MOVE + ' mm/m\n' +
                   '; Retract Speed = ' + SPEED_RETRACT + ' mm/m\n' +
                   '; Printing Acceleration = ' + ACCELERATION + ' mm/s^2\n' +
-                  '; Jerk X-axis = ' + (X_JERK !== -1 ? X_JERK + '\n': ' firmware default\n') +
-                  '; Jerk Y-axis = ' + (Y_JERK !== -1 ? Y_JERK + '\n': ' firmware default\n') +
-                  '; Jerk Z-axis = ' + (Z_JERK !== -1 ? Z_JERK + '\n': ' firmware default\n') +
-                  '; Jerk Extruder = ' + (E_JERK !== -1 ? E_JERK + '\n': ' firmware default\n') +
+                  '; Square Corner Velocity = ' + (SQUARE_CORNER_VELOCITY !== -1 ? SQUARE_CORNER_VELOCITY + '\n': ' configuration default\n') +
                   ';\n' +
                   '; Settings Pattern:\n' +
                   '; Linear Advance Version = ' + VERSION_LIN + '\n' +
@@ -193,10 +187,7 @@ function genGcode() {
                   'M109 S' + NOZZLE_TEMP + ' ; Wait for nozzle temp\n' +
                   (BED_LEVELING !== '0' ? BED_LEVELING + '; Activate bed leveling compensation\n' : '') +
                   'M204 P' + ACCELERATION + ' ; Acceleration\n' +
-                  (X_JERK !== -1 ? 'M205 X' + X_JERK + ' ; X Jerk\n' : '') +
-                  (Y_JERK !== -1 ? 'M205 Y' + Y_JERK + ' ; Y Jerk\n' : '') +
-                  (Z_JERK !== -1 ? 'M205 Z' + Z_JERK + ' ; Z Jerk\n' : '') +
-                  (E_JERK !== -1 ? 'M205 E' + E_JERK + ' ; E Jerk\n' : '') +
+                  (SQUARE_CORNER_VELOCITY !== -1 ? 'SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=' + SQUARE_CORNER_VELOCITY + ' ; Square Corner Velocity\n' : '') +
                   'G92 E0 ; Reset extruder distance\n';
 
   //move to center and layer Height
@@ -629,10 +620,7 @@ function setLocalStorage() {
       K_START = parseFloat($('#K_START').val()),
       K_END = parseFloat($('#K_END').val()),
       K_STEP = parseFloat($('#K_STEP').val()),
-      X_JERK = parseFloat($('#X_JERK').val()),
-      Y_JERK = parseFloat($('#Y_JERK').val()),
-      Z_JERK = parseFloat($('#Z_JERK').val()),
-      E_JERK = parseFloat($('#E_JERK').val()),
+      SQUARE_CORNER_VELOCITY = parseFloat($('#SQUARE_CORNER_VELOCITY').val()),
       PRINT_DIR = $('#DIR_PRINT').val(),
       LINE_SPACING = parseFloat($('#SPACE_LINE').val()),
       USE_FRAME = $('#FRAME').prop('checked'),
@@ -672,10 +660,7 @@ function setLocalStorage() {
     'K_START': K_START,
     'K_END': K_END,
     'K_STEP': K_STEP,
-    'X_JERK': X_JERK,
-    'Y_JERK': Y_JERK,
-    'Z_JERK': Z_JERK,
-    'E_JERK': E_JERK,
+    'SQUARE_CORNER_VELOCITY': SQUARE_CORNER_VELOCITY,
     'PRINT_DIR': PRINT_DIR,
     'LINE_SPACING': LINE_SPACING,
     'USE_FRAME': USE_FRAME,
@@ -827,10 +812,7 @@ function validateInput() {
         EXTRUSION_MULT: $('#EXTRUSION_MULT').val(),
         PRIME_EXT: $('#PRIME_EXT').val(),
         OFFSET_Z: $('#OFFSET_Z').val(),
-        X_JERK: $('#X_JERK').val(),
-        Y_JERK: $('#Y_JERK').val(),
-        Z_JERK: $('#Z_JERK').val(),
-        E_JERK: $('#E_JERK').val(),
+        SQUARE_CORNER_VELOCITY: $('#SQUARE_CORNER_VELOCITY').val(),
         NOZZLE_TEMP: $('#NOZZLE_TEMP').val(),
         BED_TEMP: $('#BED_TEMP').val(),
         MOVE_SPEED: $('#MOVE_SPEED').val(),
@@ -856,7 +838,7 @@ function validateInput() {
 
   // Start clean
   $('#K_START,#K_END,#K_STEP,#SPACE_LINE,#SLOW_LENGTH,#FAST_LENGTH,#FIL_DIA,#NOZ_DIA,#LAYER_HEIGHT,#BEDSIZE_X,#BEDSIZE_Y,#BEDSIZE_DIA,#EXTRUSION_MULT,#PRIME_EXT,#OFFSET_Z,#NOZ_LIN_R,'
-     + '#NOZZLE_TEMP,#BED_TEMP,#MOVE_SPEED,#RETRACT_SPEED,#PRINT_ACCL,#RETRACTION,#PRIME_SPEED,#DWELL_PRIME,#FAST_SPEED,#SLOW_SPEED,#X_JERK,#Y_JERK,#Z_JERK,#E_JERK').each((i,t) => {
+     + '#NOZZLE_TEMP,#BED_TEMP,#MOVE_SPEED,#RETRACT_SPEED,#PRINT_ACCL,#RETRACTION,#PRIME_SPEED,#DWELL_PRIME,#FAST_SPEED,#SLOW_SPEED,#SQUARE_CORNER_VELOCITY').each((i,t) => {
     t.setCustomValidity('');
     const tid = $(t).attr('id');
     $(`label[for=${tid}]`).removeClass();
@@ -988,10 +970,7 @@ $(window).on("load",() => {
       $('#K_START').val(settings['K_START']);
       $('#K_END').val(settings['K_END']);
       $('#K_STEP').val(settings['K_STEP']);
-      $('#X_JERK').val(settings['X_JERK']);
-      $('#Y_JERK').val(settings['Y_JERK']);
-      $('#Z_JERK').val(settings['Z_JERK']);
-      $('#E_JERK').val(settings['E_JERK']);
+      $('#SQUARE_CORNER_VELOCITY').val(settings['SQUARE_CORNER_VELOCITY']);
       $('#DIR_PRINT').val(settings['PRINT_DIR']);
       $('#SPACE_LINE').val(settings['LINE_SPACING']);
       $('#FRAME').prop('checked', settings['USE_FRAME']);
