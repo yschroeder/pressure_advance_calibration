@@ -186,7 +186,7 @@ function genGcode() {
                   'M190 S' + BED_TEMP + ' ; Set bed temperature (wait)\n' +
                   'M109 S' + NOZZLE_TEMP + ' ; Wait for nozzle temp\n' +
                   (BED_LEVELING !== '0' ? BED_LEVELING + '; Activate bed leveling compensation\n' : '') +
-                  'M204 P' + ACCELERATION + ' ; Acceleration\n' +
+                  'M204 S' + ACCELERATION + ' ; Acceleration\n' +
                   (SQUARE_CORNER_VELOCITY !== -1 ? 'SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=' + SQUARE_CORNER_VELOCITY + ' ; Square Corner Velocity\n' : '') +
                   'G92 E0 ; Reset extruder distance\n';
 
