@@ -41,14 +41,16 @@ label {
 
 #rect_bed {
   display: grid;
-  grid-template-columns: 46px 8px 46px;
+  grid-template-columns: 1fr max-content 1fr;
   justify-content: center;
-  column-gap: 10px;
+  column-gap: 7px;
   align-content: stretch;
+  align-items: baseline;
 }
 
 #rect_bed > input {
-  width: 42px;
+  width: 100%;
+  box-sizing : border-box;
 }
 
 .invalidNumber {
