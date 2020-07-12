@@ -3,9 +3,9 @@ layout: default
 ---
 <script language="JavaScript" type="text/javascript" src="assets/js/jquery-3.5.1.min.js"></script>
 <script language="JavaScript" type="text/javascript" src="./FileSaver.min.js"></script>
-<script language="JavaScript" type="text/javascript" src="./k-factor.js"></script>
+<script language="JavaScript" type="text/javascript" src="./generator.js"></script>
 <h1>Pressure Advance Calibration Pattern</h1>
-<p>Use this form to generate G-code that you can use to calibrate your Linear Advance K-factor. Default values apply to standard PLA with a 0.4mm nozzle.</p>
+<p>Use this form to generate G-code that you can use to calibrate Klipper's Pressure Advance feature. Default values apply to standard PLA with a 0.4mm nozzle.</p>
 <p>Press the <code class="highlighter-rouge">Generate G-code</code> button followed by <code class="highlighter-rouge">Download as file</code> to save the result.</p>
 
 <h2>Configuration</h2>
@@ -119,20 +119,20 @@ layout: default
   <div></div>
   <div class="description">Select standard or alternate pattern</div>
 
-  <label for="K_START">Starting Value for K</label>
-  <input class="numeric" name="K_START" id="K_START" step="any" value="0" onblur="validateInput()">
+  <label for="PA_START">Starting Value for PA</label>
+  <input class="numeric" name="PA_START" id="PA_START" step="any" value="0" onblur="validateInput()">
   <div></div>
-  <div class="description" id="start_factor">Starting value for the K-factor</div>
+  <div class="description">Starting value for Pressure Advance</div>
 
-  <label for="K_END">Ending Value for K</label>
-  <input class="numeric" name="K_END" id="K_END" step="any" value="2" onblur="validateInput()">
+  <label for="PA_END">Ending Value for PA</label>
+  <input class="numeric" name="PA_END" id="PA_END" step="any" value="2" onblur="validateInput()">
   <div></div>
-  <div class="description" id="end_factor">Ending value of the K-factor</div>
+  <div class="description">Ending value of Pressure Advance</div>
 
-  <label for="K_STEP">K-factor Stepping</label>
-  <input class="numeric" name="K_STEP" id="K_STEP" step="any" value="0.2" onblur="validateInput()">
+  <label for="PA_STEP">PA Stepping</label>
+  <input class="numeric" name="PA_STEP" id="PA_STEP" step="any" value="0.2" onblur="validateInput()">
   <div></div>
-  <div class="description" id="step_factor">Stepping of the K-factor in the test pattern. Needs to be an exact divisor of the K-factor Range (End - Start)</div>
+  <div class="description">Stepping of Pressure Advance in the test pattern. Needs to be an exact divisor of the Pressure Advance Range (End - Start)</div>
 
   <label for="SLOW_LENGTH">Slow Speed Length</label>
   <input class="numeric" name="SLOW_LENGTH" id="SLOW_LENGTH" step="1" value="20" onblur="validateInput()">
@@ -171,7 +171,7 @@ layout: default
   <label for="LINE_NO">Line Numbering</label>
   <input name="LINE_NO" type="checkbox" id="LINE_NO" checked="checked">
   <div></div>
-  <div class="description">Prints the K-value besides every second test line</div>
+  <div class="description">Prints the Pressure Advance value besides every second test line</div>
 
   <h3>Advanced</h3>
 
@@ -258,15 +258,15 @@ layout: default
 
 <h3>Notes on the settings:</h3>
 <ul>
-  <li><code class="highlighter-rouge">Fast Printing Speed</code> and <code class="highlighter-rouge">Slow Printing Speed</code> should be significantly different or the K-factor effect will barely be visible.</li>
+  <li><code class="highlighter-rouge">Fast Printing Speed</code> and <code class="highlighter-rouge">Slow Printing Speed</code> should be significantly different or the Pressure Advance effect will barely be visible.</li>
   <li><code class="highlighter-rouge">Use Bed Leveling</code> requires a probe.</li>
   <li>For round beds the option <code class="highlighter-rouge">Origin Bed Center</code> is automatically activated.</li>
-  <li>The overall width (X-direction) of the print depends on the <code class="highlighter-rouge">Fast Speed Length</code> and <code class="highlighter-rouge">Slow Speed Length</code> settings plus 5mm for the priming line. The length (Y-direction) depends on the K-factor Settings and <code class="highlighter-rouge">Line Spacing</code>.</li>
+  <li>The overall width (X-direction) of the print depends on the <code class="highlighter-rouge">Fast Speed Length</code> and <code class="highlighter-rouge">Slow Speed Length</code> settings plus 5mm for the priming line. The length (Y-direction) depends on the Pressure Advance Settings and <code class="highlighter-rouge">Line Spacing</code>.</li>
   <li>The script checks to make sure the print fits on the bed. Verify it using a host software like <a href="//www.pronterface.com/" target="new">Printrun</a> or <a href="//www.repetier.com/" target="new">Repetier Host</a>.</li>
-  <li><code class="highlighter-rouge">Start</code> and <code class="highlighter-rouge">End Value</code> for the K-factor determines the range that the test pattern will cover. For example a <code class="highlighter-rouge">Start Value</code> of 50 and an <code class="highlighter-rouge">End Value</code> of 150 will test a range of 100.</li>
-  <li>The <code class="highlighter-rouge">K-factor Stepping</code> determines how many test lines are printed for the above range. For example, a Stepping of 10 and a range of 100 results in 10 test lines. A stepping of 3 would not work in this example as 100 cannot be exactly divided by 3. The script will throw an error message if an exact division is not possible. In this case either the range or the stepping needs to be adjusted.</li>
-  <li>The <code class="highlighter-rouge">Alternate Pattern</code> has a second line of <code class="highlighter-rouge">Fast Printing Speed</code> to test 0 to <code class="highlighter-rouge">Fast Printing Speed</code> and back to 0 conditions. Best used with an increased <code class="highlighter-rouge">Test Line Spacing</code> and reduced K-factor range.</li>
-  <li>The proper K-factor depends on the filament, nozzle size, nozzle geometry and printing temperature. If any of these values change, the calibration might need to be repeated.</li>
+  <li><code class="highlighter-rouge">Start</code> and <code class="highlighter-rouge">End Value</code> for Pressure Advance determine the range that the test pattern will cover. For example a <code class="highlighter-rouge">Start Value</code> of 0.5 and an <code class="highlighter-rouge">End Value</code> of 1.5 will test a range of 1.0.</li>
+  <li>The <code class="highlighter-rouge">PA Stepping</code> determines how many test lines are printed for the above range. For example, a Stepping of 0.1 and a range of 1.0 results in 10 test lines. A stepping of 0.3 would not work in this example as 1.0 cannot be exactly divided by 0.3. The script will throw an error message if an exact division is not possible. In this case either the range or the stepping needs to be adjusted.</li>
+  <li>The <code class="highlighter-rouge">Alternate Pattern</code> has a second line of <code class="highlighter-rouge">Fast Printing Speed</code> to test 0 to <code class="highlighter-rouge">Fast Printing Speed</code> and back to 0 conditions. Best used with an increased <code class="highlighter-rouge">Test Line Spacing</code> and reduced Pressure Advance range.</li>
+  <li>The proper Pressure Advance depends on the filament, nozzle size, nozzle geometry and printing temperature. If any of these values change, the calibration might need to be repeated.</li>
 </ul>
 <h2>Screen-shots</h2>
 <p>The following screen-shots show some examples of the test patterns</p>

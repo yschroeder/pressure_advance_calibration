@@ -45,9 +45,9 @@ function genGcode() {
       HEIGHT_LAYER = parseFloat($('#LAYER_HEIGHT').val()),
       EXT_MULT = parseFloat($('#EXTRUSION_MULT').val()),
       PATTERN_TYPE = $('#TYPE_PATTERN').val(),
-      K_START = parseFloat($('#K_START').val()),
-      K_END = parseFloat($('#K_END').val()),
-      K_STEP = parseFloat($('#K_STEP').val()),
+      PA_START = parseFloat($('#PA_START').val()),
+      PA_END = parseFloat($('#PA_END').val()),
+      PA_STEP = parseFloat($('#PA_STEP').val()),
       SQUARE_CORNER_VELOCITY = parseFloat($('#SQUARE_CORNER_VELOCITY').val()),
       PRINT_DIR = $('#DIR_PRINT').val(),
       LINE_SPACING = parseFloat($('#SPACE_LINE').val()),
@@ -77,8 +77,8 @@ function genGcode() {
     SPEED_RETRACT *= 60;
   }
 
-  var RANGE_K = K_END - K_START,
-      PRINT_SIZE_Y = (RANGE_K / K_STEP * LINE_SPACING) + 25, // +25 with ref marking
+  var RANGE_K = PA_END - PA_START,
+      PRINT_SIZE_Y = (RANGE_K / PA_STEP * LINE_SPACING) + 25, // +25 with ref marking
       PRINT_SIZE_X = (2 * LENGTH_SLOW) + LENGTH_FAST + (USE_PRIME ? 10 : 0) + (USE_LINENO ? 8 : 0),
       CENTER_X = (NULL_CENTER ? 0 : BED_X / 2),
       CENTER_Y = (NULL_CENTER ? 0 : BED_Y / 2),
@@ -110,9 +110,9 @@ function genGcode() {
   var patSettings = {
     'lengthSlow' : LENGTH_SLOW,
     'lengthFast': LENGTH_FAST,
-    'kStart' : K_START,
-    'kEnd' : K_END,
-    'kStep' : K_STEP,
+    'paStart' : PA_START,
+    'kEnd' : PA_END,
+    'kStep' : PA_STEP,
     'lineSpacing' : LINE_SPACING
   };
 
@@ -150,9 +150,9 @@ function genGcode() {
                   '; Square Corner Velocity = ' + (SQUARE_CORNER_VELOCITY !== -1 ? SQUARE_CORNER_VELOCITY + '\n': ' configuration default\n') +
                   ';\n' +
                   '; Settings Pattern:\n' +
-                  '; Starting Value Factor = ' + K_START + '\n' +
-                  '; Ending Value Factor = ' + K_END + '\n' +
-                  '; Factor Stepping = ' + K_STEP + '\n' +
+                  '; Starting Pressure Advance Value = ' + PA_START + '\n' +
+                  '; Ending Pressure Advance Value = ' + PA_END + '\n' +
+                  '; Pressure Advance Stepping = ' + PA_STEP + '\n' +
                   '; Test Line Spacing = ' + LINE_SPACING + ' mm\n' +
                   '; Test Line Length Slow = ' + LENGTH_SLOW + ' mm\n' +
                   '; Test Line Length Fast = ' + LENGTH_FAST + ' mm\n' +
@@ -276,7 +276,7 @@ function genGcode() {
                 '; print K-values\n' +
                 ';\n';
 
-    for (var i = K_START; i <= K_END; i += K_STEP) {
+    for (var i = PA_START; i <= PA_END; i += PA_STEP) {
       if (stepping % 2 === 0) {
         k_script += moveTo(numStartX, numStartY + (stepping * LINE_SPACING), basicSettings) +
                     zHop((HEIGHT_LAYER + Z_OFFSET), basicSettings) +
@@ -614,9 +614,9 @@ function setLocalStorage() {
       HEIGHT_LAYER = parseFloat($('#LAYER_HEIGHT').val()),
       EXT_MULT = parseFloat($('#EXTRUSION_MULT').val()),
       PATTERN_TYPE = $('#TYPE_PATTERN').val(),
-      K_START = parseFloat($('#K_START').val()),
-      K_END = parseFloat($('#K_END').val()),
-      K_STEP = parseFloat($('#K_STEP').val()),
+      PA_START = parseFloat($('#PA_START').val()),
+      PA_END = parseFloat($('#PA_END').val()),
+      PA_STEP = parseFloat($('#PA_STEP').val()),
       SQUARE_CORNER_VELOCITY = parseFloat($('#SQUARE_CORNER_VELOCITY').val()),
       PRINT_DIR = $('#DIR_PRINT').val(),
       LINE_SPACING = parseFloat($('#SPACE_LINE').val()),
@@ -653,9 +653,9 @@ function setLocalStorage() {
     'HEIGHT_LAYER': HEIGHT_LAYER,
     'EXT_MULT': EXT_MULT,
     'PATTERN_TYPE': PATTERN_TYPE,
-    'K_START': K_START,
-    'K_END': K_END,
-    'K_STEP': K_STEP,
+    'PA_START': PA_START,
+    'PA_END': PA_END,
+    'PA_STEP': PA_STEP,
     'SQUARE_CORNER_VELOCITY': SQUARE_CORNER_VELOCITY,
     'PRINT_DIR': PRINT_DIR,
     'LINE_SPACING': LINE_SPACING,
@@ -774,9 +774,9 @@ function validateInput() {
         BEDSIZE_X: $('#BEDSIZE_X').val(),
         BEDSIZE_Y: $('#BEDSIZE_Y').val(),
         BEDSIZE_DIA: $('#BEDSIZE_DIA').val(),
-        K_START: $('#K_START').val(),
-        K_END: $('#K_END').val(),
-        K_STEP: $('#K_STEP').val(),
+        PA_START: $('#PA_START').val(),
+        PA_END: $('#PA_END').val(),
+        PA_STEP: $('#PA_STEP').val(),
         SPACE_LINE: $('#SPACE_LINE').val(),
         SLOW_SPEED: $('#SLOW_SPEED').val(),
         FAST_SPEED: $('#FAST_SPEED').val(),
@@ -805,16 +805,16 @@ function validateInput() {
       printDir = selectDir.val(),
       usePrime = $('#PRIME').prop('checked'),
       useLineNo = $('#LINE_NO').prop('checked'),
-      sizeY = ((parseFloat(testNaN['K_END']) - parseFloat(testNaN['K_START'])) / parseFloat(testNaN['K_STEP']) * parseFloat(testNaN['SPACE_LINE'])) + 25, // +25 with ref marking
+      sizeY = ((parseFloat(testNaN['PA_END']) - parseFloat(testNaN['PA_START'])) / parseFloat(testNaN['PA_STEP']) * parseFloat(testNaN['SPACE_LINE'])) + 25, // +25 with ref marking
       sizeX = (2 * parseFloat(testNaN['SLOW_LENGTH'])) + parseFloat(testNaN['FAST_LENGTH']) + (usePrime ? 10 : 0) + (useLineNo ? 8 : 0),
       printDirRad = printDir * Math.PI / 180,
       fitWidth = Math.round10(Math.abs(sizeX * Math.cos(printDirRad)) + Math.abs(sizeY * Math.sin(printDirRad)), 0),
       fitHeight = Math.round10(Math.abs(sizeX * Math.sin(printDirRad)) + Math.abs(sizeY * Math.cos(printDirRad)), 0),
-      decimals = getDecimals(parseFloat(testNaN['K_STEP'])),
+      decimals = getDecimals(parseFloat(testNaN['PA_STEP'])),
       invalidDiv = 0;
 
   // Start clean
-  $('#K_START,#K_END,#K_STEP,#SPACE_LINE,#SLOW_LENGTH,#FAST_LENGTH,#FIL_DIA,#NOZ_DIA,#LAYER_HEIGHT,#BEDSIZE_X,#BEDSIZE_Y,#BEDSIZE_DIA,#EXTRUSION_MULT,#PRIME_EXT,#OFFSET_Z,#NOZ_LIN_R,'
+  $('#PA_START,#PA_END,#PA_STEP,#SPACE_LINE,#SLOW_LENGTH,#FAST_LENGTH,#FIL_DIA,#NOZ_DIA,#LAYER_HEIGHT,#BEDSIZE_X,#BEDSIZE_Y,#BEDSIZE_DIA,#EXTRUSION_MULT,#PRIME_EXT,#OFFSET_Z,#NOZ_LIN_R,'
      + '#NOZZLE_TEMP,#BED_TEMP,#MOVE_SPEED,#RETRACT_SPEED,#PRINT_ACCL,#RETRACTION,#PRIME_SPEED,#DWELL_PRIME,#FAST_SPEED,#SLOW_SPEED,#SQUARE_CORNER_VELOCITY').each((i,t) => {
     t.setCustomValidity('');
     const tid = $(t).attr('id');
@@ -845,13 +845,13 @@ function validateInput() {
   });
 
   // Check if Pressure Advance Stepping is a multiple of the Pressure Advance Range
-  if ((Math.round10(parseFloat(testNaN['K_END']) - parseFloat(testNaN['K_START']), -3) * Math.pow(10, decimals)) % (parseFloat(testNaN['K_STEP']) * Math.pow(10, decimals)) !== 0) {
-    $('label[for=K_START]').addClass('invalidDiv');
-    $('#K_START')[0].setCustomValidity('Pressure Advance range cannot be cleanly divided.');
-    $('label[for=K_END]').addClass('invalidDiv');
-    $('#K_END')[0].setCustomValidity('Pressure Advance range cannot be cleanly divided.');
-    $('label[for=K_STEP]').addClass('invalidDiv');
-    $('#K_STEP')[0].setCustomValidity('Pressure Advance range cannot be cleanly divided.');
+  if ((Math.round10(parseFloat(testNaN['PA_END']) - parseFloat(testNaN['PA_START']), -3) * Math.pow(10, decimals)) % (parseFloat(testNaN['PA_STEP']) * Math.pow(10, decimals)) !== 0) {
+    $('label[for=PA_START]').addClass('invalidDiv');
+    $('#PA_START')[0].setCustomValidity('Pressure Advance range cannot be cleanly divided.');
+    $('label[for=PA_END]').addClass('invalidDiv');
+    $('#PA_END')[0].setCustomValidity('Pressure Advance range cannot be cleanly divided.');
+    $('label[for=PA_STEP]').addClass('invalidDiv');
+    $('#PA_STEP')[0].setCustomValidity('Pressure Advance range cannot be cleanly divided.');
     $('#warning1').text('Your Pressure Advance range cannot be cleanly divided. Check highlighted Pattern Settings.');
     $('#warning1').addClass('invalidDiv');
     $('#warning1').show();
@@ -861,12 +861,12 @@ function validateInput() {
 
   // Check if pattern settings exceed bed size
   if (bedShape === 'Round' && (Math.sqrt(Math.pow(fitWidth, 2) + Math.pow(fitHeight, 2)) > (parseInt(testNaN['BEDSIZE_DIA']) - 5)) && fitHeight > fitWidth) {
-    $('label[for=K_START]').addClass('invalidSize');
-    $('#K_START')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your bed\'s diameter.');
-    $('label[for=K_END]').addClass('invalidSize');
-    $('#K_END')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your bed\'s diameter.');
-    $('label[for=K_STEP]').addClass('invalidSize');
-    $('#K_STEP')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your bed\'s diameter.');
+    $('label[for=PA_START]').addClass('invalidSize');
+    $('#PA_START')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your bed\'s diameter.');
+    $('label[for=PA_END]').addClass('invalidSize');
+    $('#PA_END')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your bed\'s diameter.');
+    $('label[for=PA_STEP]').addClass('invalidSize');
+    $('#PA_STEP')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your bed\'s diameter.');
     $('label[for=SPACE_LINE]').addClass('invalidSize');
     $('#SPACE_LINE')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your bed\'s diameter.');
     $((invalidDiv ? '#warning2' : '#warning1')).text('Your Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your bed\'s diameter. Check highlighted Pattern Settings.');
@@ -895,12 +895,12 @@ function validateInput() {
   }
 
   if (bedShape === 'Rect' && fitHeight > (parseInt(testNaN['BEDSIZE_Y']) - 5)) {
-    $('label[for=K_START]').addClass('invalidSize');
-    $('#K_START')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your Y bed size.');
-    $('label[for=K_END]').addClass('invalidSize');
-    $('#K_END')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your Y bed size.');
-    $('label[for=K_STEP]').addClass('invalidSize');
-    $('#K_STEP')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your Y bed size.');
+    $('label[for=PA_START]').addClass('invalidSize');
+    $('#PA_START')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your Y bed size.');
+    $('label[for=PA_END]').addClass('invalidSize');
+    $('#PA_END')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your Y bed size.');
+    $('label[for=PA_STEP]').addClass('invalidSize');
+    $('#PA_STEP')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your Y bed size.');
     $('label[for=SPACE_LINE]').addClass('invalidSize');
     $('#SPACE_LINE')[0].setCustomValidity('Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your Y bed size.');
     $((invalidDiv ? '#warning2' : '#warning1')).text('Your Pattern size (x: ' + fitWidth + ', y: ' + fitHeight + ') exceeds your Y bed size. Check highlighted Pattern Settings.');
@@ -943,9 +943,9 @@ $(window).on("load",() => {
       $('#LAYER_HEIGHT').val(settings['HEIGHT_LAYER']);
       $('#EXTRUSION_MULT').val(settings['EXT_MULT']);
       $('#TYPE_PATTERN').val(settings['PATTERN_TYPE']);
-      $('#K_START').val(settings['K_START']);
-      $('#K_END').val(settings['K_END']);
-      $('#K_STEP').val(settings['K_STEP']);
+      $('#PA_START').val(settings['PA_START']);
+      $('#PA_END').val(settings['PA_END']);
+      $('#PA_STEP').val(settings['PA_STEP']);
       $('#SQUARE_CORNER_VELOCITY').val(settings['SQUARE_CORNER_VELOCITY']);
       $('#DIR_PRINT').val(settings['PRINT_DIR']);
       $('#SPACE_LINE').val(settings['LINE_SPACING']);
