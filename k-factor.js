@@ -713,6 +713,7 @@ function speedToggle() {
     $('#MOVE_SPEED').val(SPEED_MOVE / 60);
     $('#RETRACT_SPEED').val(SPEED_RETRACT / 60);
     $('#PRIME_SPEED').val(SPEED_PRIME / 60);
+    $('.speed_unit').text('mm/s');
   } else {
     SPEED_SLOW = $('#SLOW_SPEED').val();
     SPEED_FAST = $('#FAST_SPEED').val();
@@ -724,6 +725,7 @@ function speedToggle() {
     $('#MOVE_SPEED').val(SPEED_MOVE * 60);
     $('#RETRACT_SPEED').val(SPEED_RETRACT * 60);
     $('#PRIME_SPEED').val(SPEED_PRIME * 60);
+    $('.speed_unit').text('mm/m');
   }
 }
 

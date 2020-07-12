@@ -90,22 +90,22 @@ layout: default
 
   <label for="SLOW_SPEED">Slow Printing Speed</label>
   <input class="numeric" name="SLOW_SPEED" id="SLOW_SPEED" step="any" value="20" onblur="validateInput()">
-  <div>mm/s</div>
+  <div class="speed_unit">mm/s</div>
   <div class="description">Slow printing speed</div>
 
   <label for="FAST_SPEED">Fast Printing Speed</label>
   <input class="numeric" name="FAST_SPEED" id="FAST_SPEED" step="any" value="70" onblur="validateInput()">
-  <div>mm/s</div>
+  <div class="speed_unit">mm/s</div>
   <div class="description">Fast printing speed. This should differ noticeably from Slow Speed</div>
 
   <label for="MOVE_SPEED">Movement Speed</label>
   <input class="numeric" name="MOVE_SPEED" id="MOVE_SPEED" step="any" value="120" onblur="validateInput()">
-  <div>mm/s</div>
+  <div class="speed_unit">mm/s</div>
   <div class="description">Movement speed</div>
 
   <label for="RETRACT_SPEED">Retract Speed</label>
   <input class="numeric" name="RETRACT_SPEED" id="RETRACT_SPEED" step="any" value="30" onblur="validateInput()">
-  <div>mm/s</div>
+  <div class="speed_unit">mm/s</div>
   <div class="description">Retract Speed of the extruder</div>
 
   <label for="PRINT_ACCL">Acceleration</label>
@@ -252,7 +252,7 @@ layout: default
 
   <label for="PRIME_SPEED">Prime Printing Speed</label>
   <input class="numeric" name="PRIME_SPEED" id="PRIME_SPEED" step="any" value="30" onblur="validateInput()">
-  <div>mm/s</div>
+  <div class="speed_unit">mm/s</div>
   <div class="description">Speed of the prime move</div>
 
   <label for="DWELL_PRIME">Dwell Time</label>
