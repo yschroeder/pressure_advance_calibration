@@ -976,6 +976,8 @@ $(window).on("load",() => {
     }
   }
 
+  validateInput();
+
   // toggle between mm/s and mm/m speeds
   $('#MM_S').change(speedToggle);
 
