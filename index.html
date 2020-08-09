@@ -2,6 +2,7 @@
 layout: default
 ---
 <script language="JavaScript" type="text/javascript" src="assets/js/jquery-3.5.1.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="assets/js/plotly-latest.min.js"></script>
 <script language="JavaScript" type="text/javascript" src="./FileSaver.min.js"></script>
 <script language="JavaScript" type="text/javascript" src="./generator.js"></script>
 <h1>Pressure Advance Calibration Pattern</h1>
@@ -255,6 +256,9 @@ layout: default
 <p id="warning1" style="display: none;">warning</p>
 <p id="warning2" style="display: none;">warning</p>
 <p id="warning3" style="display: none;">warning</p>
+
+<h2>Preview</h2>
+<div id="preview" style="height:700px;"></div>
 
 <h2>G-code</h2>
 <textarea name="textarea" id="textarea"></textarea>
